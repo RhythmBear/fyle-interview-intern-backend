@@ -21,6 +21,10 @@ def list_assignments(p):
 @decorators.accept_payload
 @decorators.authenticate_principal
 def upsert_assignment(p, incoming_payload):
+    # Adding Checks to make sure that this payload in not empty
+    if incoming_payload['content'] is None:
+        return APIResponse.respond("Bad Request: Incoming payload is missing.", 400)
+
     """Create or Edit an assignment"""
     assignment = AssignmentSchema().load(incoming_payload)
     assignment.student_id = p.student_id

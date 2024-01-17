@@ -65,8 +65,12 @@ class Assignment(db.Model):
         assertions.assert_found(assignment, 'No assignment with this id was found')
         assertions.assert_valid(assignment.student_id == auth_principal.student_id, 'This assignment belongs to some other student')
         assertions.assert_valid(assignment.content is not None, 'assignment with empty content cannot be submitted')
-
+        # Added Assertion to ensure that the assignment has not been previosuly submitted
+        assertions.assert_valid(assignment.state not in ['SUBMITTED', 'GRADED'], 'only a draft assignment can be submitted')
+        
         assignment.teacher_id = teacher_id
+        # Changed Assignment State to Submitted
+        assignment.state = AssignmentStateEnum.SUBMITTED
         db.session.flush()
 
         return assignment
@@ -77,7 +81,14 @@ class Assignment(db.Model):
         assignment = Assignment.get_by_id(_id)
         assertions.assert_found(assignment, 'No assignment with this id was found')
         assertions.assert_valid(grade is not None, 'assignment with empty grade cannot be graded')
-
+        
+        # Assert that the right teacher is marking the assignment and the assignment
+        if auth_principal.teacher_id is not None:
+            assertions.assert_valid(assignment.teacher_id == auth_principal.teacher_id, 'This assignment was not assigned to this teacher')
+        else:
+            # Since a teacher is not calling the API, It has to be a principal
+            assertions.assert_valid(auth_principal.principal_id != 0)
+    
         assignment.grade = grade
         assignment.state = AssignmentStateEnum.GRADED
         db.session.flush()

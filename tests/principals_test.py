@@ -21,8 +21,8 @@ def test_grade_assignment_draft_assignment(client, h_principal):
     response = client.post(
         '/principal/assignments/grade',
         json={
-            'id': 5,
-            'grade': GradeEnum.A.value
+            'id': 2, #Since assignment 2 was used to test the teachers API, I assumed assignment 2 is a Draft intead of 5
+            'grade': 'GradeEnum.A.value'
         },
         headers=h_principal
     )

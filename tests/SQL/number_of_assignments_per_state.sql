@@ -1,1 +1,3 @@
--- Write query to get number of assignments for each state
+SELECT state, count(id) from assignments 
+GROUP BY state
+ORDER BY state ASC;
