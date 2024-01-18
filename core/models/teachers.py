@@ -1,5 +1,7 @@
 from core import db
-from core.libs import helpers
+from core.apis.decorators import AuthPrincipal
+from core.libs import helpers, assertions
+from core import db
 
 
 class Teacher(db.Model):
@@ -12,3 +14,8 @@ class Teacher(db.Model):
     def __repr__(self):
         return '<Teacher %r>' % self.id
     
+    @staticmethod
+    def get_all_teachers(auth_principal: AuthPrincipal):
+
+        assertions.assert_valid(auth_principal.principal_id is not None, 'only principals can make this request.')
+        return Teacher.query.all()
