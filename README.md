@@ -54,3 +54,11 @@ pytest -vvv -s tests/
 # pytest --cov
 # open htmlcov/index.html
 ```
+## This is my Addition to run the app with Docker
+### Run the following commands to run the app with docker 
+
+```
+docker-compose build 
+docker-compose up
+
+```
